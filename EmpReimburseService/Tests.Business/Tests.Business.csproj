@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ERS.Model\ERS.Model.csproj" />
     <ProjectReference Include="..\ERS.Business\ERS.Business.csproj" />
+    <ProjectReference Include="..\ERS.Logic\ERS.Logic.csproj" />
   </ItemGroup>
 
 </Project>
