@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using ERS.Model;
-using ERS.Business;
+using ERS.Logic;
 
 namespace Tests.Business
 {
@@ -17,7 +17,7 @@ namespace Tests.Business
             string expected = "robert350@revature.net";
 
             // Act
-            string actual = BusLayer.Register(new Employee("robert350@revature.net", "Password1!"));
+            string actual = BusinessLogic.Register(new Employee("robert350@revature.net", "Password1!"));
 
             // Assert
             Assert.Equal(expected, actual);
@@ -33,7 +33,7 @@ namespace Tests.Business
             // Arrange
 
             // Act
-            string actual = BusLayer.Register(new Employee(email, pw));
+            string actual = BusinessLogic.Register(new Employee(email, pw));
 
             // Assert
             Assert.Equal(expected, actual);
@@ -49,7 +49,7 @@ namespace Tests.Business
             // Arrange
 
             // Act
-            string actual = BusLayer.Register(new Employee(email, pw));
+            string actual = BusinessLogic.Register(new Employee(email, pw));
 
             // Assert
             Assert.Equal(expected, actual);

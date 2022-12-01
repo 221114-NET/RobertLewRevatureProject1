@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using ERS.Model;
 
-namespace ERS.Business
+namespace ERS.Logic
 {
-    public class BusLayer
+    public class BusinessLogic
     {
         public static string Register(Employee e)
         {
@@ -21,8 +25,7 @@ namespace ERS.Business
             }
 
             return e.Email;
-
-
         }
+
     }
 }
