@@ -11,7 +11,7 @@ namespace Tests.Business
     public class RegistrationTests
     {
         [Fact]
-        public void Register_NewUserWithValidEmailAndPWShouldRegister()
+        public void Register_UserWithValidEmailAndPWShouldRegister()
         {
             // Arrange
             string expected = "robert350@revature.net";
@@ -40,11 +40,14 @@ namespace Tests.Business
         }
 
         [Theory]
-        [InlineData("Invalid password", "guest@revature.net", "")]
+        [InlineData("Invalid password", "guest@revature.com", "")]
         [InlineData("Invalid password", "Hoebag@revature.com", "adio9gf")]
+        [InlineData("Invalid password", "user@revature.com", "adio9gfAte")]
+        [InlineData("Invalid password", "guest@revature.net", "")]
+        [InlineData("Invalid password", "Hoebag@revature.net", "adio9gf")]
         [InlineData("Invalid password", "user@revature.net", "adio9gfAte")]
         
-        public void Register_NewUserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
+        public void Register_UserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
 

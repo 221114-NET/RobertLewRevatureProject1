@@ -11,6 +11,16 @@ namespace ERS.Model
         public string Type { get; set; } = "";
         public double Amount { get; set; }
         public string Description { get; set; } = "";
-        public string Status { get; set; } = "Pending";
+        public TicketStatus Status { get; set; } = TicketStatus.Pending;
+
+        public ExpenseReport() {}
+
+        public ExpenseReport(string creator, string type, double amt, string desc)
+        {
+            Creator = creator;
+            Type = type;
+            Amount = amt;
+            Description = desc;
+        }
     }
 }
