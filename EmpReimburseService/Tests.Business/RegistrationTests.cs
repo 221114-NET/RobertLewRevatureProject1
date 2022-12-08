@@ -65,17 +65,49 @@ namespace Tests.Business
             Assert.Equal(expected, ex.Message);
         }
 
-        /* [Fact]
+        [Fact]
         public void Register_ExistingUserShouldNotRegister()
         {
             // Arrange
-            string expected = "User already exists";
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
+            Employee e = new Employee("joe123@revature.net", "Password1!");
 
             // Act
-            string actual = BusLayerClass.Register(new Employee("jisaburo.lew@gmail.com", "MudButt69!"));
+            string expected = "Employee already exists";
+            var ex = Assert.Throws<EmployeeAlreadyExistsException>(() => bl.Register(e));
 
             // Assert
-            Assert.Equal(expected, actual);
-        } */
+            Assert.Equal(expected, ex.Message);
+        }
+
+        [Fact]
+        public void Login_EmployeeCanLogin()
+        {
+            // Arrange
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
+
+            // Act
+            string expected = "joe123@revature.net";
+
+            // Assert
+            Assert.Equal(expected, bl.Login(new Employee("joe123@revature.net", "Password1!")).Email);
+        }
+
+        [Fact]
+        public void Login_EmployeeDoesNotExist()
+        {
+            // Arrange
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
+
+            // Act
+            string expected = "No such employee exists";
+            var ex = Assert.Throws<EmployeeNotFoundException>(() => bl.Login(new Employee("robert350@revature.net", "Password1!")));
+
+            // Assert
+            Assert.Equal(expected, ex.Message);
+        }
     }
 }
