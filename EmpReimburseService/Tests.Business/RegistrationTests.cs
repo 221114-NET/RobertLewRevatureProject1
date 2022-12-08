@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using ERS.Model;
 using ERS.Logic;
+using ERS.Repo;
 
 namespace Tests.Business
 {
@@ -14,13 +15,15 @@ namespace Tests.Business
         public void Register_UserWithValidEmailAndPWShouldRegister()
         {
             // Arrange
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
             string expected = "robert350@revature.net";
 
             // Act
-            string actual = BusinessLogic.Register(new Employee("robert350@revature.net", "Password1!"));
+            Employee actual = bl.Register(new Employee("robert350@revature.net", "Password1!"));
 
             // Assert
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual.Email);
         }
 
         [Theory]
@@ -31,12 +34,14 @@ namespace Tests.Business
         public void Register_UserWithInvalidEmailShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
 
             // Act
-            string actual = BusinessLogic.Register(new Employee(email, pw));
+            var ex = Assert.Throws<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
 
             // Assert
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, ex.Message);
         }
 
         [Theory]
@@ -50,12 +55,14 @@ namespace Tests.Business
         public void Register_UserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
+            IRepository i = new MockRepository();
+            BusinessLogic bl = new BusinessLogic(i);
 
             // Act
-            string actual = BusinessLogic.Register(new Employee(email, pw));
+            var ex = Assert.Throws<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
 
             // Assert
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, ex.Message);
         }
 
         /* [Fact]
