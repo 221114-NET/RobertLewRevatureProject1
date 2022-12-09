@@ -16,13 +16,14 @@ namespace Tests.Business
             return e;
         }
 
-        public async Task<Employee> GetEmployee(string email)
+        public async Task<Employee> GetEmployee(string email, string pw)
         {
             List<Employee> employeesList = GetListOfEmployees();
 
             if (!employeesList.Any(emp => emp.Email == email)) throw new EmployeeNotFoundException("No such employee exists");
+            if (!employeesList.Any(emp => emp.Email == email && emp.Password == pw)) throw new InvalidEmailException("Invalid password");
 
-            return employeesList.FirstOrDefault(emp => emp.Email == email)!;
+            return employeesList.FirstOrDefault(emp => emp.Email == email && emp.Password == pw)!;
         }
 
         internal List<Employee> GetListOfEmployees()

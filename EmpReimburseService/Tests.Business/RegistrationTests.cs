@@ -90,10 +90,12 @@ namespace Tests.Business
 
             // Act
             string expected = "joe123@revature.net";
+            string expPassword = "Password1!";
             Employee e = await bl.Login(new Employee("joe123@revature.net", "Password1!"));
 
             // Assert
             Assert.Equal(expected, e.Email);
+            Assert.Equal(expPassword, e.Password);
         }
 
         [Fact]

@@ -44,7 +44,7 @@ namespace ERS.Logic
 
         public async Task<Employee> Login(Employee e)
         {
-            Employee e1 = await _repo.GetEmployee(e.Email);
+            Employee e1 = await _repo.GetEmployee(e.Email, e.Password);
 
             return e1;
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ERS.Logic
+namespace ERS.Repo
 {
     public class InvalidEmailException : Exception
     {

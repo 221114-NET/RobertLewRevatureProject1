@@ -11,7 +11,7 @@ namespace ERS.Repo
     public interface IRepository
     {
         Task<Employee> Register(Employee e);
-        Task<Employee> GetEmployee(string email);
+        Task<Employee> GetEmployee(string email, string pw);
     }
 
     public class Repository : IRepository
@@ -31,7 +31,7 @@ namespace ERS.Repo
             SqlConnection connection = new(_connectionString);
             await connection.OpenAsync();
 
-            if (await GetEmployee(newEmployee.Email) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
+            if (await GetEmployee(newEmployee.Email, newEmployee.Password) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
 
             // set up query text
             string commandText;
@@ -54,14 +54,14 @@ namespace ERS.Repo
             return newEmployee;
         }
 
-        public async Task<Employee> GetEmployee(string email)
+        public async Task<Employee> GetEmployee(string email, string pw)
         {
             Employee employee = new();
 
             using SqlConnection connection = new(_connectionString);
             await connection.OpenAsync();
 
-            string commandText = string.Format($"SELECT Employees.Id FROM dbo.Employees WHERE Employees.Email={email}");
+            string commandText = string.Format($"SELECT Employees.Id FROM dbo.Employees WHERE Employees.Email={email} AND Employees.Password={pw}");
 
             // Getting employee Id
             using SqlCommand command = new(commandText, connection);
