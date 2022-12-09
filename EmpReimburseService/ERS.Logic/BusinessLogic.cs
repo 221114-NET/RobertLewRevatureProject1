@@ -10,7 +10,8 @@ namespace ERS.Logic
 {
     public interface IBusinessLogic
     {
-        Employee Register(Employee e);
+        Task<Employee> Register(Employee e);
+        Task<Employee> Login(Employee e);
     }
 
     public class BusinessLogic
@@ -22,21 +23,30 @@ namespace ERS.Logic
             _repo = repo;
         }
 
-        public Employee Register(Employee e)
+        public async Task<Employee> Register(Employee e)
         {
             Regex validateEmailRegex = new Regex("^\\S+@(?:revature.net|revature.com)$");
             Regex validatePwRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$");
 
+            Employee e1 = await _repo.Register(e);
+
             if (!validateEmailRegex.IsMatch(e.Email))
             {
-                return e;
+                throw new InvalidEmailException("Invalid email");
             }
             else if (!validatePwRegex.IsMatch(e.Password))
             {
-                return e;
+                throw new InvalidEmailException("Invalid password");
             }
 
-            return e;
+            return e1;
+        }
+
+        public async Task<Employee> Login(Employee e)
+        {
+            Employee e1 = await _repo.GetEmployee(e.Email);
+
+            return e1;
         }
 
     }

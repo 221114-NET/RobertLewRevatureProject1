@@ -12,7 +12,7 @@ namespace Tests.Business
     public class RegistrationTests
     {
         [Fact]
-        public void Register_UserWithValidEmailAndPWShouldRegister()
+        public async void Register_UserWithValidEmailAndPWShouldRegister()
         {
             // Arrange
             IRepository i = new MockRepository();
@@ -20,7 +20,7 @@ namespace Tests.Business
             string expected = "robert350@revature.net";
 
             // Act
-            Employee actual = bl.Register(new Employee("robert350@revature.net", "Password1!"));
+            Employee actual = await bl.Register(new Employee("robert350@revature.net", "Password1!"));
 
             // Assert
             Assert.Equal(expected, actual.Email);
@@ -31,14 +31,14 @@ namespace Tests.Business
         [InlineData("Invalid email", "Hoebag", "Password1!")]
         [InlineData("Invalid email", "user@gmail.com", "Password1!")]
         [InlineData("Invalid email", "User@revature.org", "Password1!")]
-        public void Register_UserWithInvalidEmailShouldNotRegister(string expected, string email, string pw)
+        public async void Register_UserWithInvalidEmailShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
             IRepository i = new MockRepository();
             BusinessLogic bl = new BusinessLogic(i);
 
             // Act
-            var ex = Assert.Throws<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
+            var ex = await Assert.ThrowsAsync<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
 
             // Assert
             Assert.Equal(expected, ex.Message);
@@ -52,21 +52,21 @@ namespace Tests.Business
         [InlineData("Invalid password", "Hoebag@revature.net", "adio9gf")]
         [InlineData("Invalid password", "user@revature.net", "adio9gfAte")]
         
-        public void Register_UserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
+        public async void Register_UserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
             IRepository i = new MockRepository();
             BusinessLogic bl = new BusinessLogic(i);
 
             // Act
-            var ex = Assert.Throws<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
+            var ex = await Assert.ThrowsAsync<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
 
             // Assert
             Assert.Equal(expected, ex.Message);
         }
 
         [Fact]
-        public void Register_ExistingUserShouldNotRegister()
+        public async void Register_ExistingUserShouldNotRegister()
         {
             // Arrange
             IRepository i = new MockRepository();
@@ -75,14 +75,14 @@ namespace Tests.Business
 
             // Act
             string expected = "Employee already exists";
-            var ex = Assert.Throws<EmployeeAlreadyExistsException>(() => bl.Register(e));
+            var ex = await Assert.ThrowsAsync<EmployeeAlreadyExistsException>(() => bl.Register(e));
 
             // Assert
             Assert.Equal(expected, ex.Message);
         }
 
         [Fact]
-        public void Login_EmployeeCanLogin()
+        public async void Login_EmployeeCanLogin()
         {
             // Arrange
             IRepository i = new MockRepository();
@@ -90,13 +90,14 @@ namespace Tests.Business
 
             // Act
             string expected = "joe123@revature.net";
+            Employee e = await bl.Login(new Employee("joe123@revature.net", "Password1!"));
 
             // Assert
-            Assert.Equal(expected, bl.Login(new Employee("joe123@revature.net", "Password1!")).Email);
+            Assert.Equal(expected, e.Email);
         }
 
         [Fact]
-        public void Login_EmployeeDoesNotExist()
+        public async void Login_EmployeeDoesNotExist()
         {
             // Arrange
             IRepository i = new MockRepository();
@@ -104,7 +105,7 @@ namespace Tests.Business
 
             // Act
             string expected = "No such employee exists";
-            var ex = Assert.Throws<EmployeeNotFoundException>(() => bl.Login(new Employee("robert350@revature.net", "Password1!")));
+            var ex = await Assert.ThrowsAsync<EmployeeNotFoundException>(() => bl.Login(new Employee("robert350@revature.net", "Password1!")));
 
             // Assert
             Assert.Equal(expected, ex.Message);

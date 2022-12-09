@@ -13,18 +13,44 @@ namespace ERS.Api.Controllers
     public class EmployeeReimburseService : ControllerBase
     {
         private readonly IBusinessLogic _logic;
+        private readonly ILogger<EmployeeReimburseService> _logger;
 
-        public EmployeeReimburseService(IBusinessLogic logic)
+        public EmployeeReimburseService(IBusinessLogic logic, ILogger<EmployeeReimburseService> logger)
         {
             _logic = logic;
+            _logger = logger;
         }
 
-        [HttpPost()]
-        public Employee Register(Employee e)
+        [HttpPost(Name = "api/registerEmployee")]
+        public async Task<ActionResult<Employee>> PostNewEmployee([FromBody] Employee newEmployee)
         {
-            Employee e1 = _logic.Register(e);
-            
-            return e1;
+            try
+            {
+                await _logic.Register(newEmployee);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Problem();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet(Name = "api/employee/{id}")]
+        public async Task<ActionResult<Employee>> GetEmployee([FromBody] Employee employee)
+        {
+            try
+            {
+                employee = await _logic.Login(employee);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return Problem();
+            }
+
+            return employee;
         }
     }
 }
