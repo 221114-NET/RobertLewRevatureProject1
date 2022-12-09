@@ -9,24 +9,23 @@ namespace Tests.Business
 {
     public class MockRepository : IRepository
     {
-        public Employee Register(Employee e)
+        public async Task<Employee> Register(Employee e)
         {
             if (GetListOfEmployees().Any(emp => emp.Email == e.Email)) throw new EmployeeAlreadyExistsException("Employee already exists");
 
             return e;
         }
 
-        public Employee GetEmployee(Employee e)
+        public async Task<Employee> GetEmployee(string email)
         {
-            if (!GetListOfEmployees().Any(emp => emp.Email == e.Email))
-            {
-                throw new EmployeeNotFoundException("No such employee exists");
-            }
+            List<Employee> employeesList = GetListOfEmployees();
 
-            return e;
+            if (!employeesList.Any(emp => emp.Email == email)) throw new EmployeeNotFoundException("No such employee exists");
+
+            return employeesList.FirstOrDefault(emp => emp.Email == email)!;
         }
 
-        public List<Employee> GetListOfEmployees()
+        internal List<Employee> GetListOfEmployees()
         {
             Employee e1 = new Employee("joe123@revature.net", "Password1!");
             Employee e2 = new Employee("john123@revature.net", "Password1!");
