@@ -28,7 +28,7 @@ namespace ERS.Repo
             exp.Creator = employee.Id;
 
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Connection String");
+            SqlConnection connection = new SqlConnection(@"");
 
             await connection.OpenAsync();
 
@@ -59,7 +59,7 @@ namespace ERS.Repo
             Employee emp = await _empRepo.GetEmployee(email, pw);
 
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Connection String");
+            SqlConnection connection = new SqlConnection(@"");
 
             await connection.OpenAsync();
 
@@ -94,7 +94,7 @@ namespace ERS.Repo
         public async void UpdateReport(ExpenseReport exp)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Connection String");
+            SqlConnection connection = new SqlConnection(@"");
 
             await connection.OpenAsync();
 

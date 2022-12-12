@@ -23,7 +23,7 @@ namespace ERS.Repo
         public async Task<Employee> Register(Employee newEmployee)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Connection String");
+            SqlConnection connection = new SqlConnection("");
 
 
             // if (await GetEmployee(newEmployee.Email, newEmployee.Password) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
@@ -53,7 +53,7 @@ namespace ERS.Repo
         {
             Employee employee = new();
 
-            SqlConnection connection = new SqlConnection(@"Connection string");
+            SqlConnection connection = new SqlConnection(@"");
 
             await connection.OpenAsync();
 
@@ -86,7 +86,7 @@ namespace ERS.Repo
         public async Task<Employee> UpdateEmployeeInfo(Employee emp)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Connection String");
+            SqlConnection connection = new SqlConnection(@"");
 
             await connection.OpenAsync();
 

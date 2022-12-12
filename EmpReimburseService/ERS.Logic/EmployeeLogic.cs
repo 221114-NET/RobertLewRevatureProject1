@@ -52,14 +52,14 @@ namespace ERS.Logic
             return e1;
         }
 
-        public async Task<Employee> UpdateInfo(string email, string pw, string fName = "", string lName = "", string newEmail = "", string newPw = "")
+        public async Task<Employee> UpdateInfo(string email, string pw, string fName = null, string lName = null, string newEmail = null, string newPw = null)
         {
             Employee employee = await _repo.GetEmployee(email, pw);
 
-            if (fName != "") employee.FName = fName;
-            if (lName != "") employee.LName = lName;
-            if (newEmail != "") employee.Email = newEmail;
-            if (newPw != "") employee.Password = newPw;
+            if (fName != null) employee.FName = fName;
+            if (lName != null) employee.LName = lName;
+            if (newEmail != null) employee.Email = newEmail;
+            if (newPw != null) employee.Password = newPw;
 
             return await _repo.UpdateEmployeeInfo(employee);
         }

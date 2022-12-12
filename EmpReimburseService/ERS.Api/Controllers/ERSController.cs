@@ -51,7 +51,7 @@ namespace ERS.Api.Controllers
             return Ok(emp);
         }
 
-        [HttpPost("api/employees/{emp.id}/UserInfo")]
+        [HttpPut("api/employees/{emp.id}/UserInfo")]
         public async Task<ActionResult<Employee>> UpdateEmployee(string email, string pw, string? fName = null, string? lName = null, string? newEmail = null, string? newPw = null)
         {
             Employee emp;
@@ -94,7 +94,7 @@ namespace ERS.Api.Controllers
             return Ok(reports);
         }
 
-        [HttpGet("api/employees/{emp.Id}/Tickets/Status")]
+        [HttpPut("api/employees/{emp.Id}/Tickets/Status")]
         public async Task<ActionResult<ExpenseReport>> ChangeExpenseReportStatus([FromQuery] string email, string pw, string status)
         {
             ExpenseReport exp;
