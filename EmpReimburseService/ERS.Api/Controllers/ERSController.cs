@@ -51,6 +51,21 @@ namespace ERS.Api.Controllers
             return Ok(emp);
         }
 
+        [HttpPost("api/employees/{emp.id}/UserInfo")]
+        public async Task<ActionResult<Employee>> UpdateEmployee(string email, string pw, string? fName = null, string? lName = null, string? newEmail = null, string? newPw = null)
+        {
+            Employee emp;
+
+            try { emp = await _empLogic.UpdateInfo(email, pw, fName, lName, newEmail, newPw); }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return Problem("Employee not updated");
+            }
+
+            return Ok(emp);
+        }
+
         [HttpPost("api/employees/{Id}/Tickets/Create")]
         public async Task<ActionResult<ExpenseReport>> PostExpenseReport([FromQuery] string email, string pw, ExpenseReport exp)
         {
