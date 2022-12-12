@@ -22,7 +22,7 @@ namespace ERS.Repo
         public async Task<Employee> Register(Employee newEmployee)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
                 Initial Catalog=P1;Persist Security Info=False;
                 User ID=robRevature;Password=Password1!;
                 MultipleActiveResultSets=False;Encrypt=True;
@@ -33,23 +33,22 @@ namespace ERS.Repo
 
             // set up query text
             string commandText;
-            commandText = string.Format("INSERT INTO dbo.Employees(FName, LName, Email, Password) VALUES (@FName, @LName, @Email, @Password)");
+            commandText = string.Format("INSERT INTO Employees(FName, LName, Email, Password) VALUES (@fName, @lName, @email, @password);");
 
             // configure the SQL query along with the connection object
             using SqlCommand command = new(commandText, connection);
             await connection.OpenAsync();
 
-            command.Parameters.AddWithValue("@FName", newEmployee.FName);
-            command.Parameters.AddWithValue("@LName", newEmployee.LName);
-            command.Parameters.AddWithValue("@Email", newEmployee.Email);
-            command.Parameters.AddWithValue("@Password", newEmployee.Password);
+            command.Parameters.AddWithValue("@fName", newEmployee.FName);
+            command.Parameters.AddWithValue("@lName", newEmployee.LName);
+            command.Parameters.AddWithValue("@email", newEmployee.Email);
+            command.Parameters.AddWithValue("@password", newEmployee.Password);
 
             try { await command.ExecuteNonQueryAsync(); } catch (Exception ex) { _logger.LogError(ex, ex.Message); }
 
             _logger.LogInformation($"Added {newEmployee.FName} {newEmployee.LName} as an employee to the DB");
 
             connection.Close();
-
             return newEmployee;
         }
 
@@ -57,7 +56,7 @@ namespace ERS.Repo
         {
             Employee employee = new();
 
-            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
                 Initial Catalog=P1;Persist Security Info=False;
                 User ID=robRevature;Password=Password1!;
                 MultipleActiveResultSets=False;Encrypt=True;
@@ -65,7 +64,7 @@ namespace ERS.Repo
 
             await connection.OpenAsync();
 
-            string commandText = string.Format($"SELECT Employees.Id FROM dbo.Employees WHERE Employees.Email={email} AND Employees.Password={pw}");
+            string commandText = string.Format($"SELECT * FROM dbo.Employees WHERE Employees.Email='{email}' AND Employees.Password='{pw}'");
 
             // Getting employee Id
             using SqlCommand command = new(commandText, connection);

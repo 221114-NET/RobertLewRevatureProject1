@@ -6,70 +6,64 @@ namespace ERS.Repo
 {
     public interface IExpenseReportRepo
     {
-        Task<ExpenseReport> CreateReport(Employee emp);
-        Task<Queue<ExpenseReport>> GetReports(Employee emp, string filter);
+        Task<ExpenseReport> CreateReport(string email, string pw, ExpenseReport exp);
+        Task<Queue<ExpenseReport>> GetReports(string email, string pw, string filter);
+        void UpdateReport(ExpenseReport exp);
     }
 
     public class ExpenseReportRepo : IExpenseReportRepo
     {
+        private readonly IEmployeeRepo _empRepo;
         private readonly ILogger<EmployeeRepo> _logger;
 
-        public ExpenseReportRepo(ILogger<EmployeeRepo> logger)
+        public ExpenseReportRepo(IEmployeeRepo empRepo, ILogger<EmployeeRepo> logger)
         {
+            _empRepo = empRepo;
             _logger = logger;
         }
 
-        public async Task<ExpenseReport> CreateReport(Employee emp)
+        public async Task<ExpenseReport> CreateReport(string email, string pw, ExpenseReport exp)
         {
+            Employee employee = await _empRepo.GetEmployee(email, pw);
+            exp.Creator = employee.Id;
+
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
                 Initial Catalog=P1;Persist Security Info=False;
                 User ID=robRevature;Password=Password1!;
                 MultipleActiveResultSets=False;Encrypt=True;
                 TrustServerCertificate=False;Connection Timeout=30;");
-                
+
             await connection.OpenAsync();
 
             // set up query text
-            string empCommandText;
-            empCommandText = string.Format($"SELECT Employees.Id FROM dbo.Employees WHERE Employees.Email={emp.Email} AND Employees.Password={emp.Password}");
-
-            using SqlCommand empCommand = new(empCommandText, connection);
-            using SqlDataReader reader = await empCommand.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                emp.Id = reader.GetGuid(0);
-            }
-            ExpenseReport exp = new ExpenseReport();
-            exp.Creator = emp.Id;
-
-            string repCommandText;
-            repCommandText = string.Format("INSERT INTO dbo.ExpenseReports(Creator, Type, Amount, Description) VALUES (@Creator, @Type, @Amount, @Description)");
+            string commandText;
+            commandText = string.Format("INSERT INTO ExpenseReports(Creator, Type, Amount, Description) VALUES (@creator, @type, @amount, @description)");
 
             // configure the SQL query along with the connection object
-            using SqlCommand command = new(repCommandText, connection);
+            using SqlCommand command = new(commandText, connection);
 
-            command.Parameters.AddWithValue("@Creator", exp.Creator);
-            command.Parameters.AddWithValue("@Type", exp.Type);
-            command.Parameters.AddWithValue("@Amount", exp.Amount);
-            command.Parameters.AddWithValue("@Description", exp.Description);
+            command.Parameters.AddWithValue("@creator", exp.Creator);
+            command.Parameters.AddWithValue("@type", exp.Type);
+            command.Parameters.AddWithValue("@amount", exp.Amount);
+            command.Parameters.AddWithValue("@description", exp.Description);
 
             try { await command.ExecuteNonQueryAsync(); } catch (Exception ex) { _logger.LogError(ex, ex.Message); }
 
-            _logger.LogInformation($"Added {exp.Type} {exp.Amount} as an expense to the DB");
+            _logger.LogInformation($"Added a {exp.Type} type of expense in the amount of: {exp.Amount} as an expense to the DB");
 
             connection.Close();
 
             return exp;
         }
 
-        public async Task<Queue<ExpenseReport>> GetReports(Employee emp, string filter)
+        public async Task<Queue<ExpenseReport>> GetReports(string email, string pw, string filter)
         {
             Queue<ExpenseReport> reports = new Queue<ExpenseReport>();
+            Employee emp = await _empRepo.GetEmployee(email, pw);
 
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
                 Initial Catalog=P1;Persist Security Info=False;
                 User ID=robRevature;Password=Password1!;
                 MultipleActiveResultSets=False;Encrypt=True;
@@ -79,8 +73,8 @@ namespace ERS.Repo
 
             string commandText;
 
-            if (emp.IsManager) commandText = string.Format($"SELECT * FROM dbo.ExpenseReports");
-            else commandText = string.Format($"SELECT * FROM dbo.ExpenseReports WHERE Status = '{filter}'");
+            if (emp.IsManager) commandText = string.Format($"SELECT * FROM dbo.ExpenseReports WHERE Status NOT IN ('{TicketStatus.Approved.ToString()}', '{TicketStatus.Rejected.ToString()}')");
+            else commandText = string.Format($"SELECT * FROM dbo.ExpenseReports WHERE Status = '{filter}' AND Creator = '{emp.Id}'");
 
             using SqlCommand command = new(commandText, connection);
             using SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -103,6 +97,27 @@ namespace ERS.Repo
             _logger.LogInformation($"Executed GetReports, returned {reports.Count} results");
 
             return reports;
+        }
+
+        public async void UpdateReport(ExpenseReport exp)
+        {
+            // user ADO.NET to push data to the DB.
+            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+                Initial Catalog=P1;Persist Security Info=False;
+                User ID=robRevature;Password=Password1!;
+                MultipleActiveResultSets=False;Encrypt=True;
+                TrustServerCertificate=False;Connection Timeout=30;");
+
+            await connection.OpenAsync();
+
+            string commandText;
+            commandText = string.Format($"UPDATE ExpenseReports SET Status = '{exp.Status.ToString()}' WHERE Id = '{exp.Id}'");
+            using SqlCommand command = new(commandText, connection);
+
+            try { await command.ExecuteNonQueryAsync(); } catch (Exception ex) { _logger.LogError(ex, ex.Message); }
+            await connection.CloseAsync();
+
+            _logger.LogInformation($"Expense report status has been changed to: {exp.Status.ToString()}");
         }
     }
 }

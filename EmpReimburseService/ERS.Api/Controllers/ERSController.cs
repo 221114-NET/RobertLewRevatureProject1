@@ -24,21 +24,20 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPost("api/registerEmployee")]
-        public async Task<ActionResult<Employee>> PostNewEmployee([FromQuery] Employee newEmployee)
+        public async Task<ActionResult<Employee>> PostNewEmployee([FromQuery]Employee newEmployee)
         {
-            Employee emp;
-            try { emp = await _empLogic.Register(newEmployee); }
+            try { await _empLogic.Register(newEmployee); }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return Problem("Did not create employee");
             }
 
-            return Ok(emp);
+            return Ok();
         }
 
         [HttpGet("api/employees/{emp.id}")]
-        public async Task<ActionResult<Employee>> GetEmployee([FromQuery] string email, string pw)
+        public async Task<ActionResult<Employee>> GetEmployee(string email, string pw)
         {
             Employee emp;
 
@@ -53,11 +52,9 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPost("api/employees/{Id}/Tickets/Create")]
-        public async Task<ActionResult<ExpenseReport>> PostExpenseReport([FromQuery] Employee emp)
+        public async Task<ActionResult<ExpenseReport>> PostExpenseReport([FromQuery] string email, string pw, ExpenseReport exp)
         {
-            ExpenseReport exp;
-
-            try { exp = await _expLogic.CreateTicket(emp); }
+            try { exp = await _expLogic.CreateTicket(email, pw, exp); }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
@@ -68,11 +65,11 @@ namespace ERS.Api.Controllers
         }
 
         [HttpGet("api/employees/{emp.Id}/Tickets")]
-        public async Task<ActionResult<ExpenseReport>> GetExpenseReports([FromQuery] Employee emp, string filter)
+        public async Task<ActionResult<ExpenseReport>> GetExpenseReports([FromQuery] string email, string pw, string filter)
         {
             Queue<ExpenseReport> reports;
 
-            try { reports = await _expLogic.GetReports(emp, filter); }
+            try { reports = await _expLogic.GetReports(email, pw, filter); }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
@@ -83,11 +80,11 @@ namespace ERS.Api.Controllers
         }
 
         [HttpGet("api/employees/{emp.Id}/Tickets/Status")]
-        public async Task<ActionResult<ExpenseReport>> ChangeExpenseReportStatus([FromQuery] Employee emp, string status)
+        public async Task<ActionResult<ExpenseReport>> ChangeExpenseReportStatus([FromQuery] string email, string pw, string status)
         {
             ExpenseReport exp;
 
-            try { exp = await _expLogic.ChangeReportStatus(emp, status); }
+            try { exp = await _expLogic.ChangeReportStatus(email, pw, status); }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
