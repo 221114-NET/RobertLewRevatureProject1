@@ -103,7 +103,7 @@ namespace Tests.Api
             IExpenseReportRepo iExp = new MockExpReportRepo();
             IEmployeeRepo iEmp = new MockEmployeeRepo();
             ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
-            ExpenseReport exp = await bl.ChangeReportStatus(new Employee(true), "Rejected");
+            ExpenseReport exp = await bl.ChangeReportStatus("manager@revature.com", "Password1!", TicketStatus.Rejected.ToString());
 
             // Act
             TicketStatus expected = TicketStatus.Rejected;
@@ -123,7 +123,7 @@ namespace Tests.Api
 
             // Act
             string expected = "You are not approved to change status";
-            var ex = await Assert.ThrowsAsync<NotAManagerException>(() => bl.ChangeReportStatus(new Employee(), "Approved"));
+            var ex = await Assert.ThrowsAsync<NotAManagerException>(() => bl.ChangeReportStatus("someone@revature.com", "Password1!", TicketStatus.Approved.ToString()));
 
             // Assert
             Assert.Equal(expected, ex.Message);

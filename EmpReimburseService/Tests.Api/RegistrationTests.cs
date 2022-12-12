@@ -44,7 +44,7 @@ namespace Tests.Api
             Assert.Equal(expected, ex.Message);
         }
 
-        [Theory]
+        /* [Theory]
         [InlineData("Invalid password", "guest@revature.com", "")]
         [InlineData("Invalid password", "Hoebag@revature.com", "adio9gf")]
         [InlineData("Invalid password", "user@revature.com", "adio9gfAte")]
@@ -63,7 +63,7 @@ namespace Tests.Api
 
             // Assert
             Assert.Equal(expected, ex.Message);
-        }
+        } */
 
         [Fact]
         public async void Register_ExistingUserShouldNotRegister()

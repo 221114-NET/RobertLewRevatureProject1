@@ -20,6 +20,7 @@ namespace Tests.Api
         {
             List<Employee> employeesList = GetListOfEmployees();
 
+            if (email == "manager@revature.com") return new Employee(true);
             if (!employeesList.Any(emp => emp.Email == email)) throw new EmployeeNotFoundException("No such employee exists");
             if (!employeesList.Any(emp => emp.Email == email && emp.Password == pw)) throw new InvalidEmailException("Invalid password");
 
