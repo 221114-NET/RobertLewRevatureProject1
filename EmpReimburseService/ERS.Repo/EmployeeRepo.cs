@@ -1,44 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
 using ERS.Model;
 
 namespace ERS.Repo
 {
-    public interface IRepository
+    public interface IEmployeeRepo
     {
         Task<Employee> Register(Employee e);
         Task<Employee> GetEmployee(string email, string pw);
     }
 
-    public class Repository : IRepository
+    public class EmployeeRepo : IEmployeeRepo
     {
-        public readonly string _connectionString;
-        private readonly ILogger<Repository> _logger;
+        private readonly ILogger<EmployeeRepo> _logger;
 
-        public Repository(string connectionString, ILogger<Repository> logger)
+        public EmployeeRepo(ILogger<EmployeeRepo> logger)
         {
-            _connectionString = connectionString;
             _logger = logger;
         }
 
         public async Task<Employee> Register(Employee newEmployee)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new(_connectionString);
-            await connection.OpenAsync();
+            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+                Initial Catalog=P1;Persist Security Info=False;
+                User ID=robRevature;Password=Password1!;
+                MultipleActiveResultSets=False;Encrypt=True;
+                TrustServerCertificate=False;Connection Timeout=30;");
+
 
             if (await GetEmployee(newEmployee.Email, newEmployee.Password) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
 
             // set up query text
             string commandText;
-            commandText = string.Format("INSTER INTO dbo.Employees(Fname, Lname, Email, Password) VALUES (@FName, @LName, @Email, @Password)");
+            commandText = string.Format("INSERT INTO dbo.Employees(FName, LName, Email, Password) VALUES (@FName, @LName, @Email, @Password)");
 
             // configure the SQL query along with the connection object
             using SqlCommand command = new(commandText, connection);
+            await connection.OpenAsync();
 
             command.Parameters.AddWithValue("@FName", newEmployee.FName);
             command.Parameters.AddWithValue("@LName", newEmployee.LName);
@@ -58,7 +57,12 @@ namespace ERS.Repo
         {
             Employee employee = new();
 
-            using SqlConnection connection = new(_connectionString);
+            SqlConnection connection = new(@"Server=tcp:robertlew-revature.database.windows.net,1433;
+                Initial Catalog=P1;Persist Security Info=False;
+                User ID=robRevature;Password=Password1!;
+                MultipleActiveResultSets=False;Encrypt=True;
+                TrustServerCertificate=False;Connection Timeout=30;");
+
             await connection.OpenAsync();
 
             string commandText = string.Format($"SELECT Employees.Id FROM dbo.Employees WHERE Employees.Email={email} AND Employees.Password={pw}");

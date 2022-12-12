@@ -15,8 +15,8 @@ namespace Tests.Business
         public async void Register_UserWithValidEmailAndPWShouldRegister()
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
             string expected = "robert350@revature.net";
 
             // Act
@@ -34,8 +34,8 @@ namespace Tests.Business
         public async void Register_UserWithInvalidEmailShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
 
             // Act
             var ex = await Assert.ThrowsAsync<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
@@ -55,8 +55,8 @@ namespace Tests.Business
         public async void Register_UserWithInvalidPWShouldNotRegister(string expected, string email, string pw)
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
 
             // Act
             var ex = await Assert.ThrowsAsync<InvalidEmailException>(() => bl.Register(new Employee(email, pw)));
@@ -69,8 +69,8 @@ namespace Tests.Business
         public async void Register_ExistingUserShouldNotRegister()
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
             Employee e = new Employee("joe123@revature.net", "Password1!");
 
             // Act
@@ -85,13 +85,13 @@ namespace Tests.Business
         public async void Login_EmployeeCanLogin()
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
 
             // Act
             string expected = "joe123@revature.net";
             string expPassword = "Password1!";
-            Employee e = await bl.Login(new Employee("joe123@revature.net", "Password1!"));
+            Employee e = await bl.Login("joe123@revature.net", "Password1!");
 
             // Assert
             Assert.Equal(expected, e.Email);
@@ -102,12 +102,12 @@ namespace Tests.Business
         public async void Login_EmployeeDoesNotExist()
         {
             // Arrange
-            IRepository i = new MockRepository();
-            BusinessLogic bl = new BusinessLogic(i);
+            IEmployeeRepo i = new MockEmployeeRepo();
+            EmployeeLogic bl = new EmployeeLogic(i);
 
             // Act
             string expected = "No such employee exists";
-            var ex = await Assert.ThrowsAsync<EmployeeNotFoundException>(() => bl.Login(new Employee("robert350@revature.net", "Password1!")));
+            var ex = await Assert.ThrowsAsync<EmployeeNotFoundException>(() => bl.Login("robert350@revature.net", "Password1!"));
 
             // Assert
             Assert.Equal(expected, ex.Message);

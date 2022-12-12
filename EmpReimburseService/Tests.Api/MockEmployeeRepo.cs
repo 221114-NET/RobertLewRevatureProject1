@@ -7,7 +7,7 @@ using ERS.Repo;
 
 namespace Tests.Business
 {
-    public class MockRepository : IRepository
+    public class MockEmployeeRepo : IEmployeeRepo
     {
         public async Task<Employee> Register(Employee e)
         {
