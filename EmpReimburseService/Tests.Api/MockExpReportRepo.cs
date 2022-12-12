@@ -9,20 +9,20 @@ namespace Tests.Api
 {
     public class MockExpReportRepo : IExpenseReportRepo
     {
-        public async Task<ExpenseReport> CreateReport(Employee emp)
+        public async Task<ExpenseReport> CreateReport(string email, string pw, ExpenseReport exp)
         {
-            emp.Id = new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d");
+            Guid Id = new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d");
 
             ExpenseReport tempExpReport = new ExpenseReport();
             tempExpReport.Amount = 100.00;
-            tempExpReport.Creator = emp.Id;
+            tempExpReport.Creator = Id;
             tempExpReport.Description = "Description";
             tempExpReport.Type = "Travel";
 
             return tempExpReport;
         }
 
-        public async Task<Queue<ExpenseReport>> GetReports(Employee emp, string filter)
+        public async Task<Queue<ExpenseReport>> GetReports(string email, string pw, string filter)
         {
             ExpenseReport rep1 = new ExpenseReport(new Guid(), "Unique", 250.0, "Unique description");
             ExpenseReport rep2 = new ExpenseReport(new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d"), "Travel", 500.0, "Hotel and Airfare");
@@ -36,6 +36,9 @@ namespace Tests.Api
             reports.Enqueue(rep3);
             reports.Enqueue(rep4);
             reports.Enqueue(rep5);
+
+            Employee emp = new Employee(email, pw);
+            emp.Id = new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d");
 
             if (!emp.IsManager)
             {
@@ -51,6 +54,11 @@ namespace Tests.Api
             }
             
             return reports;
+        }
+
+        public void UpdateReport(ExpenseReport exp)
+        {
+            throw new NotImplementedException();
         }
     }
 }

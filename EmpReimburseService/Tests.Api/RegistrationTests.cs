@@ -7,7 +7,7 @@ using ERS.Model;
 using ERS.Logic;
 using ERS.Repo;
 
-namespace Tests.Business
+namespace Tests.Api
 {
     public class RegistrationTests
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ERS.Model;
 using ERS.Repo;
 
-namespace Tests.Business
+namespace Tests.Api
 {
     public class MockEmployeeRepo : IEmployeeRepo
     {

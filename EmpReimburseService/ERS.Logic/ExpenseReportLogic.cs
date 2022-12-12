@@ -24,6 +24,12 @@ namespace ERS.Logic
             _logger = logger;
         }
 
+        public ExpenseReportLogic(IExpenseReportRepo expRepo, IEmployeeRepo empRepo)
+        {
+            _expRepo = expRepo;
+            _empRepo = empRepo;
+        }
+
         public async Task<ExpenseReport> CreateTicket(string email, string pw, ExpenseReport exp)
         {
             ExpenseReport newReport = await _expRepo.CreateReport(email, pw, exp);

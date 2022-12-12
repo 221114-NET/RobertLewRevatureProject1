@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ERS.Logic;
 using ERS.Model;
 using ERS.Repo;
@@ -15,12 +16,13 @@ namespace Tests.Api
         public async void ExpenseReport_CanBeCreated()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
             Guid expected = new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d");
 
             // Act
-            ExpenseReport actual = await bl.CreateTicket(new Employee());
+            ExpenseReport actual = await bl.CreateTicket("robert350@revature.net", "123abc", new ExpenseReport());
 
             // Assert
             Assert.Equal(expected, actual.Creator);
@@ -45,9 +47,10 @@ namespace Tests.Api
         public async void ExpenseReports_ManagerCanSeeQueue()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
-            Queue<ExpenseReport> reports = await bl.GetReports(new Employee(true), "");
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
+            Queue<ExpenseReport> reports = await bl.GetReports("someone@revature.com", "Password1!", TicketStatus.Approved.ToString());
 
 
             // Act
@@ -62,9 +65,10 @@ namespace Tests.Api
         public async void ExpenseReports_NonManagerCanSeeOwnReports()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
-            Queue<ExpenseReport> reports = await bl.GetReports(new Employee(new Guid("c40dab3d-3279-4b57-97f9-6f594137d99d"), "", "", "", ""), "");
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
+            Queue<ExpenseReport> reports = await bl.GetReports("someone@revature.com", "Password1!", TicketStatus.Pending.ToString());
 
 
             // Act
@@ -79,9 +83,10 @@ namespace Tests.Api
         public async void ExpenseReport_ManagerCanChangeStatusToApproved()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
-            ExpenseReport exp = await bl.ChangeReportStatus(new Employee(true), "Approved");
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
+            ExpenseReport exp = await bl.ChangeReportStatus("manager@revature.com", "Password1!", TicketStatus.Approved.ToString());
 
             // Act
             TicketStatus expected = TicketStatus.Approved;
@@ -95,8 +100,9 @@ namespace Tests.Api
         public async void ExpenseReport_ManagerCanChangeStatusToRejected()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
             ExpenseReport exp = await bl.ChangeReportStatus(new Employee(true), "Rejected");
 
             // Act
@@ -111,8 +117,9 @@ namespace Tests.Api
         public async void ExpenseReport_NonManagerCannotChangeStatus()
         {
             // Arrange
-            IExpenseReportRepo i = new MockExpReportRepo();
-            ExpenseReportLogic bl = new ExpenseReportLogic(i);
+            IExpenseReportRepo iExp = new MockExpReportRepo();
+            IEmployeeRepo iEmp = new MockEmployeeRepo();
+            ExpenseReportLogic bl = new ExpenseReportLogic(iExp, iEmp);
 
             // Act
             string expected = "You are not approved to change status";
