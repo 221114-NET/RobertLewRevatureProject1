@@ -5,20 +5,22 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using ERS.Model;
 using ERS.Repo;
+using Microsoft.Extensions.Logging;
 
 namespace ERS.Logic
 {
-    public interface IBusinessLogic
+    public interface IEmployeeLogic
     {
         Task<Employee> Register(Employee e);
-        Task<Employee> Login(Employee e);
+        Task<Employee> Login(string email, string pw);
     }
 
-    public class BusinessLogic
+    public class EmployeeLogic : IEmployeeLogic
     {
-        private readonly IRepository _repo;
+        private readonly IEmployeeRepo _repo;
+        // private readonly ILogger<EmployeeLogic> _logger;
 
-        public BusinessLogic(IRepository repo)
+        public EmployeeLogic(IEmployeeRepo repo)
         {
             _repo = repo;
         }
@@ -26,7 +28,7 @@ namespace ERS.Logic
         public async Task<Employee> Register(Employee e)
         {
             Regex validateEmailRegex = new Regex("^\\S+@(?:revature.net|revature.com)$");
-            Regex validatePwRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$");
+            // Regex validatePwRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$");
 
             Employee e1 = await _repo.Register(e);
 
@@ -34,17 +36,17 @@ namespace ERS.Logic
             {
                 throw new InvalidEmailException("Invalid email");
             }
-            else if (!validatePwRegex.IsMatch(e.Password))
+            /* else if (!validatePwRegex.IsMatch(e.Password))
             {
                 throw new InvalidEmailException("Invalid password");
-            }
+            } */
 
             return e1;
         }
 
-        public async Task<Employee> Login(Employee e)
+        public async Task<Employee> Login(string email, string pw)
         {
-            Employee e1 = await _repo.GetEmployee(e.Email, e.Password);
+            Employee e1 = await _repo.GetEmployee(email, pw);
 
             return e1;
         }

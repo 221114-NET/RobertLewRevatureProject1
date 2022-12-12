@@ -1,3 +1,6 @@
+using ERS.Logic;
+using ERS.Repo;
+
 namespace ERS.Api;
 
 public class Program
@@ -17,6 +20,10 @@ public class Program
         // Transient services are created every time they are requested from the service container.
         // Scoped services are created once per HTTP request.
         // Singleton services are created when the program starts. Every subsequential call to it uses the same object.
+        builder.Services.AddScoped<IEmployeeLogic, EmployeeLogic>();
+        builder.Services.AddScoped<IExpenseReportLogic, ExpenseReportLogic>();
+        builder.Services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+        builder.Services.AddScoped<IExpenseReportRepo, ExpenseReportRepo>();
 
         var app = builder.Build();
 

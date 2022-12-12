@@ -14,11 +14,28 @@ namespace ERS.Model
         public string Email { get; set; } = "";
         public string Password { get; set; } = "";
         public bool IsManager { get; set; } = false;
+        public bool IsLogged { get; set; } = false;
+
+
 
         public Employee() { }
 
+        public Employee(bool isManager)
+        {
+            IsManager = isManager;
+        }
+
         public Employee(string email, string password, string fName = "", string lName = "")
         {
+            FName = fName;
+            LName = lName;
+            Email = email;
+            Password = password;
+        }
+
+        public Employee(Guid id, string fName, string lName, string email, string password)
+        {
+            Id = id;
             FName = fName;
             LName = lName;
             Email = email;
