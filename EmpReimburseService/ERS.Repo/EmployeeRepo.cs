@@ -8,6 +8,7 @@ namespace ERS.Repo
     {
         Task<Employee> Register(Employee e);
         Task<Employee> GetEmployee(string email, string pw);
+        Task<Employee> UpdateEmployeeInfo(Employee emp);
     }
 
     public class EmployeeRepo : IEmployeeRepo
@@ -22,14 +23,10 @@ namespace ERS.Repo
         public async Task<Employee> Register(Employee newEmployee)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
-                Initial Catalog=P1;Persist Security Info=False;
-                User ID=robRevature;Password=Password1!;
-                MultipleActiveResultSets=False;Encrypt=True;
-                TrustServerCertificate=False;Connection Timeout=30;");
+            SqlConnection connection = new SqlConnection(@"Connection String");
 
 
-            if (await GetEmployee(newEmployee.Email, newEmployee.Password) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
+            // if (await GetEmployee(newEmployee.Email, newEmployee.Password) != null) throw new EmployeeAlreadyExistsException("Employee already exists");
 
             // set up query text
             string commandText;
@@ -56,11 +53,7 @@ namespace ERS.Repo
         {
             Employee employee = new();
 
-            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
-                Initial Catalog=P1;Persist Security Info=False;
-                User ID=robRevature;Password=Password1!;
-                MultipleActiveResultSets=False;Encrypt=True;
-                TrustServerCertificate=False;Connection Timeout=30;");
+            SqlConnection connection = new SqlConnection(@"Connection string");
 
             await connection.OpenAsync();
 
@@ -88,6 +81,25 @@ namespace ERS.Repo
             _logger.LogInformation("Executed GetEmployee");
 
             return employee;
+        }
+
+        public async Task<Employee> UpdateEmployeeInfo(Employee emp)
+        {
+            // user ADO.NET to push data to the DB.
+            SqlConnection connection = new SqlConnection(@"Connection String");
+
+            await connection.OpenAsync();
+
+            string commandText;
+            commandText = string.Format($"UPDATE Employees SET FName = '{emp.FName}', LName = '{emp.LName}', Email = '{emp.Email}', Password = '{emp.Password}' WHERE Id = '{emp.Id}'");
+            using SqlCommand command = new(commandText, connection);
+
+            try { await command.ExecuteNonQueryAsync(); } catch (Exception ex) { _logger.LogError(ex, ex.Message); }
+            await connection.CloseAsync();
+
+            _logger.LogInformation($"Employee info has been updated");
+
+            return emp;
         }
     }
 }

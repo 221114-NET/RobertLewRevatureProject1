@@ -13,6 +13,7 @@ namespace ERS.Logic
     {
         Task<Employee> Register(Employee e);
         Task<Employee> Login(string email, string pw);
+        Task<Employee> UpdateInfo(string email, string pw, string fName = "", string lName = "", string newEmail = "", string newPw = "");
     }
 
     public class EmployeeLogic : IEmployeeLogic
@@ -51,5 +52,16 @@ namespace ERS.Logic
             return e1;
         }
 
+        public async Task<Employee> UpdateInfo(string email, string pw, string fName = "", string lName = "", string newEmail = "", string newPw = "")
+        {
+            Employee employee = await _repo.GetEmployee(email, pw);
+
+            if (fName != "") employee.FName = fName;
+            if (lName != "") employee.LName = lName;
+            if (newEmail != "") employee.Email = newEmail;
+            if (newPw != "") employee.Password = newPw;
+
+            return await _repo.UpdateEmployeeInfo(employee);
+        }
     }
 }

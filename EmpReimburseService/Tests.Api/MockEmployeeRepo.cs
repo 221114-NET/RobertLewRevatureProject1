@@ -39,5 +39,10 @@ namespace Tests.Api
 
             return employees;
         }
+
+        public async Task<Employee> UpdateEmployeeInfo(Employee emp)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

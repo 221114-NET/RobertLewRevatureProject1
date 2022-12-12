@@ -28,11 +28,7 @@ namespace ERS.Repo
             exp.Creator = employee.Id;
 
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
-                Initial Catalog=P1;Persist Security Info=False;
-                User ID=robRevature;Password=Password1!;
-                MultipleActiveResultSets=False;Encrypt=True;
-                TrustServerCertificate=False;Connection Timeout=30;");
+            SqlConnection connection = new SqlConnection(@"Connection String");
 
             await connection.OpenAsync();
 
@@ -63,11 +59,7 @@ namespace ERS.Repo
             Employee emp = await _empRepo.GetEmployee(email, pw);
 
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
-                Initial Catalog=P1;Persist Security Info=False;
-                User ID=robRevature;Password=Password1!;
-                MultipleActiveResultSets=False;Encrypt=True;
-                TrustServerCertificate=False;Connection Timeout=30;");
+            SqlConnection connection = new SqlConnection(@"Connection String");
 
             await connection.OpenAsync();
 
@@ -102,11 +94,7 @@ namespace ERS.Repo
         public async void UpdateReport(ExpenseReport exp)
         {
             // user ADO.NET to push data to the DB.
-            SqlConnection connection = new SqlConnection(@"Server=tcp:robertlew-revature.database.windows.net,1433;
-                Initial Catalog=P1;Persist Security Info=False;
-                User ID=robRevature;Password=Password1!;
-                MultipleActiveResultSets=False;Encrypt=True;
-                TrustServerCertificate=False;Connection Timeout=30;");
+            SqlConnection connection = new SqlConnection(@"Connection String");
 
             await connection.OpenAsync();
 
