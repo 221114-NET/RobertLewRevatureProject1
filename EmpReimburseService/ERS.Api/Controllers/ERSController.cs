@@ -24,7 +24,7 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPost("api/registerEmployee")]
-        public async Task<ActionResult<Employee>> PostNewEmployee([FromQuery]Employee newEmployee)
+        public async Task<ActionResult<Employee>> PostNewEmployee([FromBody]Employee newEmployee)
         {
             try { await _empLogic.Register(newEmployee); }
             catch (Exception ex)
@@ -36,8 +36,8 @@ namespace ERS.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("api/employees/{emp.id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(string email, string pw)
+        [HttpGet("api/employees/login")]
+        public async Task<ActionResult<Employee>> GetEmployee([FromBody]string email, string pw)
         {
             Employee emp;
 
@@ -52,7 +52,7 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPut("api/employees/{emp.id}/UserInfo")]
-        public async Task<ActionResult<Employee>> UpdateEmployee(string email, string pw, string? fName = null, string? lName = null, string? newEmail = null, string? newPw = null)
+        public async Task<ActionResult<Employee>> UpdateEmployee([FromBody]string email, string pw, string? fName = null, string? lName = null, string? newEmail = null, string? newPw = null)
         {
             Employee emp;
 
@@ -67,7 +67,7 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPost("api/employees/{Id}/Tickets/Create")]
-        public async Task<ActionResult<ExpenseReport>> PostExpenseReport([FromQuery] string email, string pw, ExpenseReport exp)
+        public async Task<ActionResult<ExpenseReport>> PostExpenseReport([FromBody] string email, string pw, ExpenseReport exp)
         {
             try { exp = await _expLogic.CreateTicket(email, pw, exp); }
             catch (Exception e)
@@ -80,7 +80,7 @@ namespace ERS.Api.Controllers
         }
 
         [HttpGet("api/employees/{emp.Id}/Tickets")]
-        public async Task<ActionResult<ExpenseReport>> GetExpenseReports([FromQuery] string email, string pw, string filter)
+        public async Task<ActionResult<ExpenseReport>> GetExpenseReports([FromBody] string email, string pw, string filter)
         {
             Queue<ExpenseReport> reports;
 
@@ -95,7 +95,7 @@ namespace ERS.Api.Controllers
         }
 
         [HttpPut("api/employees/{emp.Id}/Tickets/Status")]
-        public async Task<ActionResult<ExpenseReport>> ChangeExpenseReportStatus([FromQuery] string email, string pw, string status)
+        public async Task<ActionResult<ExpenseReport>> ChangeExpenseReportStatus([FromBody] string email, string pw, string status)
         {
             ExpenseReport exp;
 
